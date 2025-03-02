@@ -38,10 +38,10 @@ jobs:
 
       - name: Run tests
         run: |
-          cargo test --locked --workspace --all-features --all-targets
+          cargo test --workspace --all-features --all-targets
           # Running doc tests separately is a workaround for https://github.com/rust-lang/cargo/issues/6669
           # Setting LD_LIBRARY_PATH is a workaround for https://github.com/TheBevyFlock/bevy_new_2d/pull/318#issuecomment-2585935350
-          LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --locked --workspace --all-features --doc
+          LD_LIBRARY_PATH="$(rustc --print target-libdir)" cargo test --workspace --all-features --doc
 
   # Run clippy lints.
   clippy:
@@ -70,7 +70,7 @@ jobs:
           sweep-cache: true
 
       - name: Run clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features -- --deny warnings
+        run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
 
   # Check formatting.
   format:
@@ -118,4 +118,4 @@ jobs:
           sweep-cache: true
 
       - name: Check documentation
-        run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
+        run: cargo doc --workspace --all-features --document-private-items --no-deps
