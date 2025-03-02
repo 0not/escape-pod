@@ -1,10 +1,35 @@
 [package]
 name = "escape-pod"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 [lints.clippy]
 type_complexity = "allow"
+
+# The default profile is optimized for Wasm builds because
+# that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
+# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+# lto = "thin" # doesn't work with dynamic linking on Windows
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
+strip = "debuginfo"
+
+# Override some settings for native builds.
+[profile.release-native]
+# Default to release profile values.
+inherits = "release"
+# Optimize with performance in mind.
+opt-level = 3
+# Keep debug information in the binary.
+strip = "none"
 
 [dependencies]
 bevy = { version = "0.15", features = ["dynamic_linking"] }
@@ -16,3 +41,4 @@ itertools = "0.14.0"
 # space-rogue = { path = "../../games/space-rogue" }
 bevy_action_ticker = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
 space-rogue = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
+
