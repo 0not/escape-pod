@@ -1,10 +1,28 @@
 [package]
 name = "escape-pod"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 
 [lints.clippy]
 type_complexity = "allow"
+
+[features]
+default = [
+    # Default to a native dev build.
+    "dev_native",
+]
+dev = [
+    # Improve compile times for dev builds by linking Bevy as a dynamic library.
+    "bevy/dynamic_linking",
+    "bevy/bevy_dev_tools",
+]
+dev_native = [
+    "dev",
+    # Enable asset hot reloading for native dev builds.
+    "bevy/file_watcher",
+    # Enable embedded asset hot reloading for native dev builds.
+    "bevy/embedded_watcher",
+]
 
 # The default profile is optimized for Wasm builds because
 # that's what [Trunk reads](https://github.com/trunk-rs/trunk/issues/605).
@@ -15,7 +33,7 @@ type_complexity = "allow"
 codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
 # Slows compile times, marginal improvements.
-# lto = "thin" # doesn't work with dynamic linking on Windows
+lto = "thin" # doesn't work with dynamic linking on Windows
 # Optimize with size in mind (also try "z", sometimes it is better).
 # Slightly slows compile times, great improvements to file size and runtime performance.
 opt-level = "s"
