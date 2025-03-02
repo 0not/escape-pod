@@ -3,8 +3,8 @@ name = "escape-pod"
 version = "0.1.0"
 edition = "2024"
 
-[lints]
-workspace = true
+[lints.clippy]
+type_complexity = "allow"
 
 [dependencies]
 bevy = { version = "0.15", features = ["dynamic_linking"] }
@@ -12,5 +12,7 @@ bevy-inspector-egui = "0.29.1"
 rand = "0.8"
 itertools = "0.14.0"
 
-bevy_action_ticker = { path = "../../crates/bevy_action_ticker" }
-space-rogue = { path = "../../games/space-rogue" }
+# bevy_action_ticker = { path = "../../crates/bevy_action_ticker" }
+# space-rogue = { path = "../../games/space-rogue" }
+bevy_action_ticker = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
+space-rogue = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
