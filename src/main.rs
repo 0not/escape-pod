@@ -1,7 +1,7 @@
+use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy_action_ticker::{ActionTick, ActionTickStatus, ActionTickerPlugin, PreActionTick};
 
-use bevy_inspector_egui::quick::ResourceInspectorPlugin;
 use itertools::Itertools;
 use space_rogue::action::{Actor, ActorPlugin, Npc, Quickness};
 use space_rogue::animation::{active_actor_animation, transform_animation};
@@ -21,7 +21,10 @@ use space_rogue::states::{AppState, MenuState, finish_loading, finish_startup};
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(AssetPlugin {
+            meta_check: AssetMetaCheck::Never,
+            ..Default::default()
+        }))
         .add_plugins(DebugPlugin)
         .add_plugins(ActionTickerPlugin::default())
         .add_plugins(ActorPlugin)
@@ -33,8 +36,6 @@ fn main() {
         .init_resource::<ActionTickCounter>()
         .register_type::<ActionRoundCounter>()
         .init_resource::<ActionRoundCounter>()
-        .add_plugins(ResourceInspectorPlugin::<ActionTickCounter>::default())
-        .add_plugins(ResourceInspectorPlugin::<ActionRoundCounter>::default())
         .init_state::<AppState>()
         .add_sub_state::<MenuState>()
         .add_systems(
@@ -118,16 +119,16 @@ pub fn camera_follow_entity(
 
 fn draw_velocity_arrow(
     mut commands: Commands,
-    mut gizmos: Gizmos,
+    // mut gizmos: Gizmos,
     mut q_velocity: Query<(&Position, &Velocity, &mut VelocityArrow), Changed<Position>>,
     text_font: Res<SquareTextFont>,
 ) {
     for (pos, vel, mut vel_arrow) in q_velocity.iter_mut() {
-        gizmos.line_2d(
-            pos.to_vec2() * TILE_SIZE,
-            (pos.to_vec2() + vel.velocity) * TILE_SIZE,
-            Color::srgb(1., 0., 0.),
-        );
+        // gizmos.line_2d(
+        //     pos.to_vec2() * TILE_SIZE,
+        //     (pos.to_vec2() + vel.velocity) * TILE_SIZE,
+        //     Color::srgb(1., 0., 0.),
+        // );
 
         // Clear the VelocityArrow
         vel_arrow.positions.clear();
@@ -141,10 +142,10 @@ fn draw_velocity_arrow(
         {
             let direction = Direction::try_from(&(next_tile - tile));
             if let Ok(direction) = direction {
-                info!(
-                    "Tile: {:?}, Next Tile: {:?}, Direction: {:?}",
-                    tile, next_tile, direction
-                );
+                // info!(
+                //     "Tile: {:?}, Next Tile: {:?}, Direction: {:?}",
+                //     tile, next_tile, direction
+                // );
 
                 let glyph: char = match direction {
                     Direction::N => '↑',
