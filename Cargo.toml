@@ -58,5 +58,5 @@ itertools = "0.14.0"
 # bevy_action_ticker = { path = "../../crates/bevy_action_ticker" }
 # space-rogue = { path = "../../games/space-rogue" }
 bevy_action_ticker = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
-space-rogue = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
+spacerl = { git = "ssh://git@github.com/0not/roguelike_dev.git" }
 
