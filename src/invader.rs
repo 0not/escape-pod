@@ -10,7 +10,7 @@ use spacerl::{
 /// Marker component for invaders
 /// TODO: Move this to Escape Pod?
 #[derive(Component, Default)]
-#[require(Actor, Npc)]
+#[require(Actor, Npc, Viewshed)]
 pub struct Invader;
 
 pub struct SpawnInvader {
