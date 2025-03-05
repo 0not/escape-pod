@@ -3,7 +3,7 @@ use spacerl::{
     action::{Actor, Npc, Quickness},
     config::TILE_SIZE,
     map::viewshed::Viewshed,
-    movement::Position,
+    movement::{OccupiesPosition, Position},
     visuals::glyph::Glyph,
 };
 
@@ -40,6 +40,7 @@ fn spawn_invader(spawn_actor: In<SpawnInvader>, mut commands: Commands) {
         Quickness::new(spawn_actor.quickness),
         spawn_actor.pos,
         spawn_actor.pos.to_transform(TILE_SIZE),
+        OccupiesPosition::Yes,
         Visibility::Visible,
         Viewshed::new(5),
     ));

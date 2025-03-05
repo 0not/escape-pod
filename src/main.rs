@@ -4,7 +4,7 @@ use bevy_action_ticker::ActionTickerPlugin;
 
 use escape_pod::npc::NpcPlugin;
 use escape_pod::npc::invader::spawn::SpawnInvader;
-use spacerl::action::ActorPlugin;
+use spacerl::action::ActionPlugin;
 use spacerl::animation::AnimationPlugin;
 use spacerl::assets::GameAssetsPlugin;
 use spacerl::camera::CameraPlugin;
@@ -27,7 +27,7 @@ fn main() {
         .add_plugins(AppStatePlugin)
         .add_plugins(GameAssetsPlugin)
         .add_plugins(ActionTickerPlugin::default())
-        .add_plugins(ActorPlugin)
+        .add_plugins(ActionPlugin)
         .add_plugins(NpcPlugin)
         .add_plugins(MapPlugin)
         .add_plugins(PlayerPlugin)
