@@ -36,7 +36,6 @@ fn invader_choose_action(
     q_map: Query<(&Map,)>,
     q_player: Query<Entity, With<Player>>,
 ) {
-    info!("Invader choosing action");
     let player_entity = if let Ok(player_entity) = q_player.get_single() {
         player_entity
     } else {
