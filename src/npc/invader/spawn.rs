@@ -7,12 +7,19 @@ use spacerl::{
     visuals::glyph::Glyph,
 };
 
+pub(super) fn plugin(app: &mut App) {
+    // Register types
+    app.register_type::<Invader>();
+    app.register_type::<SpawnInvader>();
+}
+
 /// Marker component for invaders
 /// TODO: Move this to Escape Pod?
-#[derive(Component, Default)]
+#[derive(Component, Default, Reflect)]
 #[require(Actor, Npc, Viewshed)]
 pub struct Invader;
 
+#[derive(Reflect)]
 pub struct SpawnInvader {
     pub name: &'static str,
     pub pos: Position,

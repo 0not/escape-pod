@@ -2,7 +2,8 @@ use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy_action_ticker::ActionTickerPlugin;
 
-use escape_pod::invader::SpawnInvader;
+use escape_pod::npc::NpcPlugin;
+use escape_pod::npc::invader::spawn::SpawnInvader;
 use spacerl::action::ActorPlugin;
 use spacerl::animation::AnimationPlugin;
 use spacerl::assets::GameAssetsPlugin;
@@ -23,15 +24,16 @@ fn main() {
             ..Default::default()
         }))
         .add_plugins(DebugPlugin)
+        .add_plugins(AppStatePlugin)
         .add_plugins(GameAssetsPlugin)
         .add_plugins(ActionTickerPlugin::default())
         .add_plugins(ActorPlugin)
+        .add_plugins(NpcPlugin)
         .add_plugins(MapPlugin)
         .add_plugins(PlayerPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(MovementPlugin)
         .add_plugins(AnimationPlugin)
-        .add_plugins(AppStatePlugin)
         .add_plugins(VisualsPlugin)
         .add_systems(OnEnter(AppState::Startup), (setup, finish_startup).chain())
         .run();

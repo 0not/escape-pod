@@ -1,1 +1,1 @@
-pub mod invader;
+pub mod npc;
