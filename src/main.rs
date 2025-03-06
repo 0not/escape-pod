@@ -1,22 +1,17 @@
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
-use bevy_action_ticker::ActionTickerPlugin;
 
+use escape_pod::health::HealthPlugin;
+use escape_pod::items::ItemsPlugin;
 use escape_pod::npc::NpcPlugin;
 use escape_pod::npc::invader::spawn::SpawnInvader;
-use spacerl::action::ActionPlugin;
-use spacerl::animation::AnimationPlugin;
-use spacerl::assets::GameAssetsPlugin;
-use spacerl::camera::CameraPlugin;
+use spacerl::SpaceRLPlugin;
 use spacerl::camera::follow::FollowEntity;
 use spacerl::config::TILE_SIZE;
-use spacerl::debugging::DebugPlugin;
-use spacerl::map::components::MapGridSize;
-use spacerl::map::{self, MapPlugin, spawn::SpawnMap};
-use spacerl::movement::{MovementPlugin, Position};
-use spacerl::player::{PlayerPlugin, spawn::SpawnPlayer};
-use spacerl::states::{AppState, AppStatePlugin, finish_startup};
-use spacerl::visuals::VisualsPlugin;
+use spacerl::map;
+use spacerl::movement::Position;
+use spacerl::player::spawn::SpawnPlayer;
+use spacerl::states::{AppState, finish_startup};
 
 fn main() {
     App::new()
@@ -24,18 +19,11 @@ fn main() {
             meta_check: AssetMetaCheck::Never,
             ..Default::default()
         }))
-        .add_plugins(DebugPlugin)
-        .add_plugins(AppStatePlugin)
-        .add_plugins(GameAssetsPlugin)
-        .add_plugins(ActionTickerPlugin::default())
-        .add_plugins(ActionPlugin)
+        .add_plugins(SpaceRLPlugin)
+        // Escape Pod specific plugins
         .add_plugins(NpcPlugin)
-        .add_plugins(MapPlugin)
-        .add_plugins(PlayerPlugin)
-        .add_plugins(CameraPlugin)
-        .add_plugins(MovementPlugin)
-        .add_plugins(AnimationPlugin)
-        .add_plugins(VisualsPlugin)
+        .add_plugins(ItemsPlugin)
+        .add_plugins(HealthPlugin)
         .add_systems(OnEnter(AppState::Startup), (setup, finish_startup).chain())
         .run();
 }
@@ -47,7 +35,7 @@ fn setup(mut commands: Commands) {
     //     map::MapGridSize(TILE_SIZE),
     //     (Position::new(-11, -11), Position::new(11, 11)),
     // );
-    let map = map::mapgen::generate_viewshed_test_map(MapGridSize(TILE_SIZE));
+    let map = map::mapgen::generate_viewshed_test_map(map::components::MapGridSize(TILE_SIZE));
 
     // Spawn player
     let pos = Position::new(0, 0);
@@ -78,5 +66,5 @@ fn setup(mut commands: Commands) {
     }
 
     // Spawn Map (and create Map entity)
-    commands.queue(SpawnMap { map });
+    commands.queue(map::spawn::SpawnMap { map });
 }
