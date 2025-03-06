@@ -1,13 +1,16 @@
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 
-use escape_pod::health::HealthPlugin;
-use escape_pod::items::ItemsPlugin;
 use escape_pod::npc::NpcPlugin;
 use escape_pod::npc::invader::spawn::SpawnInvader;
 use spacerl::SpaceRLPlugin;
 use spacerl::camera::follow::FollowEntity;
 use spacerl::config::TILE_SIZE;
+use spacerl::health::{Damage, DamageType};
+use spacerl::inventory::Inventory;
+use spacerl::items::Item;
+use spacerl::items::equip::Equippable;
+use spacerl::items::weapons::{Weapon, WeaponType};
 use spacerl::map;
 use spacerl::movement::Position;
 use spacerl::player::spawn::SpawnPlayer;
@@ -22,8 +25,6 @@ fn main() {
         .add_plugins(SpaceRLPlugin)
         // Escape Pod specific plugins
         .add_plugins(NpcPlugin)
-        .add_plugins(ItemsPlugin)
-        .add_plugins(HealthPlugin)
         .add_systems(OnEnter(AppState::Startup), (setup, finish_startup).chain())
         .run();
 }
@@ -37,11 +38,29 @@ fn setup(mut commands: Commands) {
     // );
     let map = map::mapgen::generate_viewshed_test_map(map::components::MapGridSize(TILE_SIZE));
 
+    // Spawn Weapon for player
+    let weapon = commands
+        .spawn((
+            Name::new("Pipe Wrench"),
+            Item,
+            Equippable,
+            Weapon,
+            WeaponType::Melee,
+            Damage(10),
+            DamageType::Kinetic,
+        ))
+        .id();
+
     // Spawn player
     let pos = Position::new(0, 0);
     // Shift position if it is on a wall
     let pos = map.get_nearest_walkable_tile(&pos).unwrap_or(pos);
-    commands.queue(SpawnPlayer { position: pos });
+    let inventory = Inventory::new(vec![weapon]);
+
+    commands.queue(SpawnPlayer {
+        position: pos,
+        inventory,
+    });
 
     // Spawn camera
     // commands.spawn((Camera2d, FollowEntity(Some(player_entity))));
@@ -58,10 +77,13 @@ fn setup(mut commands: Commands) {
         let pos = Position::new(*x, *y);
         // Shift position if it is on wall
         let pos = map.get_nearest_walkable_tile(&pos).unwrap_or(pos);
+        let inventory = Inventory::new(vec![weapon]);
+
         commands.queue(SpawnInvader {
             name,
             pos,
             quickness: 100,
+            inventory,
         });
     }
 
