@@ -13,7 +13,7 @@ use spacerl::config::TILE_SIZE;
 use spacerl::debugging::DebugPlugin;
 use spacerl::map::{self, MapPlugin, SpawnMap};
 use spacerl::movement::{MovementPlugin, Position};
-use spacerl::player::{PlayerPlugin, SpawnPlayer};
+use spacerl::player::{PlayerPlugin, spawn::SpawnPlayer};
 use spacerl::states::{AppState, AppStatePlugin, finish_startup};
 use spacerl::visuals::VisualsPlugin;
 
