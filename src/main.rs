@@ -11,7 +11,8 @@ use spacerl::camera::CameraPlugin;
 use spacerl::camera::follow::FollowEntity;
 use spacerl::config::TILE_SIZE;
 use spacerl::debugging::DebugPlugin;
-use spacerl::map::{self, MapPlugin, SpawnMap};
+use spacerl::map::components::MapGridSize;
+use spacerl::map::{self, MapPlugin, spawn::SpawnMap};
 use spacerl::movement::{MovementPlugin, Position};
 use spacerl::player::{PlayerPlugin, spawn::SpawnPlayer};
 use spacerl::states::{AppState, AppStatePlugin, finish_startup};
@@ -46,7 +47,7 @@ fn setup(mut commands: Commands) {
     //     map::MapGridSize(TILE_SIZE),
     //     (Position::new(-11, -11), Position::new(11, 11)),
     // );
-    let map = map::mapgen::generate_viewshed_test_map(map::MapGridSize(TILE_SIZE));
+    let map = map::mapgen::generate_viewshed_test_map(MapGridSize(TILE_SIZE));
 
     // Spawn player
     let pos = Position::new(0, 0);

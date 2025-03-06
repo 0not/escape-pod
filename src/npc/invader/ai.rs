@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use spacerl::{
     action::{Action, ActiveActor, Actor, ChooseAction},
-    map::{Map, viewshed::VisibleActors},
+    map::{components::Map, viewshed::VisibleActors},
     movement::{Direction, Position},
     player::Player,
 };
