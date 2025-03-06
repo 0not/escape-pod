@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 use spacerl::{
     action::{Action, ActiveActor, Actor, ChooseAction},
+    health::Damage,
+    inventory::Inventory,
+    items::{equip::Equippable, equip::Equipped, weapons::Weapon},
     map::{components::Map, viewshed::VisibleActors},
     movement::{Direction, Position},
     player::Player,
@@ -24,7 +27,13 @@ pub(super) fn plugin(app: &mut App) {
 fn invader_choose_action(
     mut commands: Commands,
     q_active_actor: Query<
-        (Entity, &Position, &VisibleActors),
+        (
+            Entity,
+            &Position,
+            &VisibleActors,
+            &Inventory,
+            Option<&Equipped>,
+        ),
         (
             With<Actor>,
             With<ActiveActor>,
@@ -35,6 +44,7 @@ fn invader_choose_action(
     q_other_actors: Query<(Entity, &Position), (With<Actor>, Without<ActiveActor>)>,
     q_map: Query<(&Map,)>,
     q_player: Query<Entity, With<Player>>,
+    q_weapons: Query<(Entity, &Damage), (With<Weapon>, With<Equippable>)>,
 ) {
     let player_entity = if let Ok(player_entity) = q_player.get_single() {
         player_entity
@@ -43,10 +53,36 @@ fn invader_choose_action(
         return;
     };
 
-    for (active_entity, active_pos, visible_actors) in q_active_actor.iter() {
+    for (active_entity, active_pos, visible_actors, inventory, equipped) in q_active_actor.iter() {
+        // Highest priority is equipping a weapon with the highest damage
+        let mut best_weapon = None;
+        let mut best_damage = 0;
+        for (weapon_entity, damage) in q_weapons.iter() {
+            if inventory.contains(&weapon_entity) && damage.0 > best_damage {
+                best_weapon = Some(weapon_entity);
+                best_damage = damage.0;
+            }
+        }
+
+        // Only equip new weapon if it is better than the currently equipped weapon
+        if best_weapon.is_some() {
+            if let Some(equipped) = equipped {
+                // Get damage of equipped weapon
+                let (_, equipped_damage) = q_weapons
+                    .get(equipped.0)
+                    .expect("should have equipped weapon");
+
+                if best_damage <= equipped_damage.0 {
+                    best_weapon = None;
+                }
+            }
+        }
+
         // Randomly choose whether to move or do something else
         let will_move = rand::random::<bool>();
-        let next_action: Action = if visible_actors.0.contains(&player_entity) {
+        let next_action: Action = if let Some(weapon_entity) = best_weapon {
+            Action::Equip(weapon_entity)
+        } else if visible_actors.0.contains(&player_entity) {
             // If the actor can see the player, follow the player
             Action::Follow(player_entity)
         } else if will_move {
