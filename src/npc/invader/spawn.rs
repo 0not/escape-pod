@@ -15,7 +15,6 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 /// Marker component for invaders
-/// TODO: Move this to Escape Pod?
 #[derive(Component, Default, Reflect)]
 #[require(Actor, Npc, Viewshed, Inventory)]
 pub struct Invader;
